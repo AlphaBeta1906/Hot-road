@@ -1,0 +1,194 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://Topdown_vehicle_sprites_pack/Black_viper.png" type="Texture" id=1]
+[ext_resource path="res://Road.tscn" type="PackedScene" id=2]
+[ext_resource path="res://icon.png" type="Texture" id=3]
+[ext_resource path="res://Main.gd" type="Script" id=4]
+[ext_resource path="res://PauseDialog.gd" type="Script" id=5]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends KinematicBody2D
+var motion =  Vector2()
+var Speed = 800
+signal Score
+var UP = Vector2(0,-1)
+var score = 0
+
+#player script
+
+func _physics_process(delta):
+	
+	emit_signal(\"Score\")
+	if Input.is_action_pressed(\"ui_right\"):
+		motion.x = Speed
+	
+	elif Input.is_action_pressed(\"ui_left\"):
+		motion.x = -Speed
+	
+	elif Input.is_action_pressed(\"ui_down\"):
+		motion.y = Speed
+	
+	elif Input.is_action_pressed(\"ui_up\"):
+		motion.y = -Speed
+	else:
+		motion.x = 0
+		motion.y =0
+	move_and_slide(motion,UP)
+
+
+
+"
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 20.9437, 54.9969 )
+
+[sub_resource type="RectangleShape2D" id=3]
+extents = Vector2( 30.5226, 30.8957 )
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource( 4 )
+__meta__ = {
+"_edit_horizontal_guides_": [ -25.3258, 1153.7, 1100.0 ],
+"_edit_vertical_guides_": [ 66.274, 405.572, 336.915, 339.049, 344.397, 344.257, 347.291, 336.673, -0.417084, 418.0, 315.669 ]
+}
+
+[node name="Player" type="KinematicBody2D" parent="."]
+position = Vector2( 191.807, 501.666 )
+script = SubResource( 1 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="Sprite" type="Sprite" parent="Player"]
+position = Vector2( -59.6692, -66.7992 )
+scale = Vector2( 0.49876, 0.509656 )
+texture = ExtResource( 1 )
+centered = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
+visible = false
+shape = SubResource( 2 )
+
+[node name="ParallaxBackground" parent="." instance=ExtResource( 2 )]
+
+[node name="Pause" type="Button" parent="."]
+margin_left = 10.6908
+margin_top = 8.01807
+margin_right = 60.6908
+margin_bottom = 28.0181
+text = "Pause"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="."]
+margin_left = 313.722
+margin_top = 0.984749
+margin_right = 360.722
+margin_bottom = 14.9847
+custom_colors/font_color = Color( 0.0784314, 0.0941176, 1, 1 )
+text = "Score : "
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label2" type="Label" parent="."]
+margin_left = 357.723
+margin_top = 2.17395
+margin_right = 404.723
+margin_bottom = 33.174
+custom_colors/font_color = Color( 0.0784314, 0.0941176, 1, 1 )
+text = "0
+"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Timer" type="Timer" parent="."]
+autostart = true
+
+[node name="WindowDialog" type="PopupDialog" parent="."]
+pause_mode = 2
+visible = true
+margin_left = 144.0
+margin_top = 271.0
+margin_right = 274.0
+margin_bottom = 392.0
+script = ExtResource( 5 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Button" type="Button" parent="WindowDialog"]
+margin_left = 31.1498
+margin_top = 36.3133
+margin_right = 113.15
+margin_bottom = 56.3133
+text = "Resume"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Button2" type="Button" parent="WindowDialog"]
+margin_left = 30.0
+margin_top = 60.2339
+margin_right = 114.0
+margin_bottom = 80.2339
+text = "Main menu"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Button3" type="Button" parent="WindowDialog"]
+margin_left = 30.0685
+margin_top = 83.9683
+margin_right = 114.068
+margin_bottom = 103.968
+text = "Quit"
+
+[node name="Label" type="Label" parent="WindowDialog"]
+margin_left = 3.5636
+margin_top = 16.9066
+margin_right = 129.564
+margin_bottom = 47.9066
+text = "Pause
+"
+align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Sprite" type="Sprite" parent="."]
+visible = false
+position = Vector2( 213.591, 701.974 )
+scale = Vector2( 6.30787, 1 )
+texture = ExtResource( 3 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="StaticBody2D" type="StaticBody2D" parent="Sprite"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Sprite/StaticBody2D"]
+shape = SubResource( 3 )
+
+[node name="Sprite2" type="Sprite" parent="."]
+visible = false
+position = Vector2( 221.6, -72.2335 )
+scale = Vector2( 6.30787, 1 )
+texture = ExtResource( 3 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="StaticBody2D" type="StaticBody2D" parent="Sprite2"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Sprite2/StaticBody2D"]
+shape = SubResource( 3 )
+[connection signal="Score" from="Player" to="." method="_on_Player_Score"]
+[connection signal="pressed" from="Pause" to="WindowDialog" method="_on_Pause_pressed"]
+[connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]
+[connection signal="popup_hide" from="WindowDialog" to="WindowDialog" method="_on_WindowDialog_popup_hide"]
+[connection signal="pressed" from="WindowDialog/Button" to="WindowDialog" method="_on_Button_pressed"]
+[connection signal="pressed" from="WindowDialog/Button2" to="WindowDialog" method="_on_Button2_pressed"]
+[connection signal="pressed" from="WindowDialog/Button3" to="WindowDialog" method="_on_Button3_pressed"]
